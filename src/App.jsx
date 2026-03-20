@@ -46,12 +46,22 @@ function AppShell() {
       <Topline />
       <Header />
       <Routes>
+        <Route path="/oybo2" element={<ExternalRedirect to="https://consumer-news.com" />} />
+        <Route path="/oybo3" element={<ExternalRedirect to="https://consumer-news.com" />} />
         <Route path="/" element={<HomePage />} />
         <Route path="/story/oybo-airpods" element={<ArticlePage />} />
       </Routes>
       <Footer />
     </div>
   );
+}
+
+function ExternalRedirect({ to }) {
+  useEffect(() => {
+    window.location.replace(to);
+  }, [to]);
+
+  return null;
 }
 
 function Topline() {
