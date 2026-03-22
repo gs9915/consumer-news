@@ -105,7 +105,9 @@ function StoryMeta({ story, compact = false }) {
 }
 
 function Header() {
+  const { pathname } = useLocation();
   const trendingLinks = homepageStories.slice(0, 4);
+  const hideTrendingBar = pathname === "/story/oybo-airpods";
 
   return (
     <>
@@ -138,20 +140,22 @@ function Header() {
         </div>
       </header>
 
-      <nav className="topic-strip" aria-label="Trending">
-        <div className="container topic-strip-inner">
-          <h2 className="topic-strip-title">Trending:</h2>
-          <menu className="topic-strip-menu">
-            {trendingLinks.map((story) => (
-              <li className="topic-strip-item" key={story.slug}>
-                <Link className="topic-pill" to={story.path}>
-                  {story.title}
-                </Link>
-              </li>
-            ))}
-          </menu>
-        </div>
-      </nav>
+      {!hideTrendingBar ? (
+        <nav className="topic-strip" aria-label="Trending">
+          <div className="container topic-strip-inner">
+            <h2 className="topic-strip-title">Trending:</h2>
+            <menu className="topic-strip-menu">
+              {trendingLinks.map((story) => (
+                <li className="topic-strip-item" key={story.slug}>
+                  <Link className="topic-pill" to={story.path}>
+                    {story.title}
+                  </Link>
+                </li>
+              ))}
+            </menu>
+          </div>
+        </nav>
+      ) : null}
     </>
   );
 }
@@ -508,10 +512,11 @@ function RoundupArticlePage({ article }) {
 
 function StandardArticlePage({ article }) {
   const relatedStories = homepageStories.filter((story) => story.slug !== article.slug).slice(0, 4);
+  const isOyboArticle = article.slug === "oybo-airpods";
 
   return (
     <main className="page-main article-page">
-      <TopAdBanner />
+      {!isOyboArticle ? <TopAdBanner /> : null}
 
       <section className="article-shell">
         <div className="container article-frame">
@@ -584,35 +589,37 @@ function StandardArticlePage({ article }) {
             </div>
           </div>
 
-          <aside className="article-right-rail">
-            <section className="rail-block">
-              <h2>Key facts</h2>
-              <dl className="facts-list">
-                {article.facts.map((fact) => (
-                  <div key={fact.label}>
-                    <dt>{fact.label}</dt>
-                    <dd>{fact.value}</dd>
-                  </div>
-                ))}
-              </dl>
-            </section>
+          {!isOyboArticle ? (
+            <aside className="article-right-rail">
+              <section className="rail-block">
+                <h2>Key facts</h2>
+                <dl className="facts-list">
+                  {article.facts.map((fact) => (
+                    <div key={fact.label}>
+                      <dt>{fact.label}</dt>
+                      <dd>{fact.value}</dd>
+                    </div>
+                  ))}
+                </dl>
+              </section>
 
-            <section className="rail-block">
-              <h2>Related coverage</h2>
-              <div className="rail-story-list">
-                {relatedStories.map((story) => (
-                  <article className="rail-story" key={story.slug}>
-                    <p className="story-label">{story.category}</p>
-                    <h3>
-                      <Link className="headline-link" to={story.path}>
-                        {story.title}
-                      </Link>
-                    </h3>
-                  </article>
-                ))}
-              </div>
-            </section>
-          </aside>
+              <section className="rail-block">
+                <h2>Related coverage</h2>
+                <div className="rail-story-list">
+                  {relatedStories.map((story) => (
+                    <article className="rail-story" key={story.slug}>
+                      <p className="story-label">{story.category}</p>
+                      <h3>
+                        <Link className="headline-link" to={story.path}>
+                          {story.title}
+                        </Link>
+                      </h3>
+                    </article>
+                  ))}
+                </div>
+              </section>
+            </aside>
+          ) : null}
         </div>
       </section>
     </main>
