@@ -19,6 +19,97 @@ export const oyboCta = {
   note: "See current offer details and store information on Oybo's site.",
 };
 
+const roundupProducts = [
+  {
+    slug: "macbook-neo-review",
+    sectionTitle: "Apple MacBook Neo",
+    title: "MacBook Neo",
+    image: macbookNeoImage,
+    alt: "A MacBook Neo laptop on a desk with a bright display.",
+    caption: "Apple",
+    score: 90,
+    description:
+      "The MacBook Neo is the best lower-cost Mac Apple has shipped in years, even if the memory ceiling keeps it from being the universal answer.",
+    pros: [
+      "$599 starting price",
+      "Premium design",
+      "Bright display",
+      "Good everyday performance",
+      "Excellent keyboard and trackpad",
+    ],
+    cons: [
+      "Only 8GB of RAM at entry level",
+      "Limited storage options",
+      "Only two USB-C ports",
+    ],
+  },
+  {
+    slug: "iphone-17e-review",
+    sectionTitle: "iPhone 17e",
+    title: "iPhone 17e",
+    image: iphone17eImage,
+    alt: "An iPhone 17e photographed from the back in a soft pink finish.",
+    caption: "Apple / ConsumerNews",
+    score: 80,
+    description:
+      "The iPhone 17e is a tidy entry point into the Apple ecosystem, but the display and camera limitations are obvious next to Android rivals.",
+    pros: [
+      "Improved portrait photography",
+      "MagSafe support",
+      "Fast day-to-day performance",
+      "A better value than older iPhone SE models",
+    ],
+    cons: [
+      "Display feels dated",
+      "Single-camera setup is limiting",
+    ],
+  },
+  {
+    slug: "galaxy-s26-review",
+    sectionTitle: "Samsung Galaxy S26",
+    title: "Samsung Galaxy S26",
+    image: galaxyS26Image,
+    alt: "A Galaxy S26 smartphone with multiple rear cameras.",
+    caption: "Samsung / ConsumerNews",
+    score: 80,
+    description:
+      "Samsung's smaller flagship is still polished and easy to recommend, but the update feels conservative enough that last year's model remains part of the buying conversation.",
+    pros: [
+      "Bigger battery",
+      "A flagship phone that is not huge",
+      "Strong display quality",
+      "Polished software",
+    ],
+    cons: [
+      "Too similar to the previous model",
+      "Camera upgrades are modest",
+      "The value proposition weakens at full price",
+    ],
+  },
+  {
+    slug: "xps-16-review",
+    sectionTitle: "Dell XPS 16",
+    title: "Dell XPS 16",
+    image: xps16Image,
+    alt: "A Dell XPS 16 laptop open on a desk.",
+    caption: "Dell / ConsumerNews",
+    score: 86,
+    description:
+      "The XPS 16 feels premium again thanks to its display, design, and performance, though the keyboard still carries enough personality to divide shoppers.",
+    pros: [
+      "Premium design",
+      "Strong performance",
+      "Beautiful display",
+      "Solid battery life",
+    ],
+    cons: [
+      "Expensive",
+      "Keyboard still feels divisive",
+      "Port selection remains limited",
+    ],
+  },
+];
+
 const makeArticle = (article) => ({
   author,
   path: `/story/${article.slug}`,
@@ -27,7 +118,40 @@ const makeArticle = (article) => ({
 
 export const articles = [
   makeArticle({
+    slug: "review-recap",
+    template: "roundup",
+    category: "Reviews",
+    title: "ConsumerNews review recap: MacBook Neo, iPhone 17e, Galaxy S26 and more",
+    dek: "A roundup of the latest reviews from ConsumerNews.",
+    image: galaxyS26Image,
+    alt: "A Galaxy S26 photographed for a review roundup.",
+    heroCaption: "Samsung Galaxy S26.",
+    meta: ["8 min read", "March 22, 2026", "Reviews"],
+    intro: [
+      "Spring hardware season has brought another flood of polished but carefully segmented devices. This week's reviews revisit Apple's low-cost MacBook Neo, the iPhone 17e, Samsung's smaller Galaxy S26 and Dell's refreshed XPS 16.",
+      "Taken together, they tell a familiar story about consumer tech in 2026: good products are still arriving, but the smartest buying decisions increasingly come down to understanding which compromises feel intentional and which ones simply reflect a market standing still.",
+    ],
+    products: roundupProducts,
+    bridgeSections: [
+      {
+        title: "The rest of the new Apple gear",
+        paragraphs: [
+          "Apple's other spring updates were less dramatic than the MacBook Neo and the iPhone 17e, but they reinforced the same theme. The company's lineup is getting broader without necessarily getting simpler. Faster chips and refreshed configurations matter, but the strongest recommendations still come from devices that match real-world needs instead of spec-sheet ambition.",
+          "That is what makes the lower end of the market more interesting right now. Buyers are not just asking what is newest. They are asking which product feels most complete once the launch headlines fade.",
+        ],
+      },
+      {
+        title: "But wait, there's more",
+        paragraphs: [
+          "Beyond the headline reviews, the rest of the week's product coverage kept circling the same practical questions about value, longevity and everyday usability. Good design still helps products stand out, but it is no longer enough on its own.",
+          "The better devices are the ones that make their tradeoffs obvious before buyers get home. That sounds simple, but it is still surprisingly rare.",
+        ],
+      },
+    ],
+  }),
+  makeArticle({
     slug: "oybo-airpods",
+    template: "standard",
     category: "Retail Analysis",
     title: "Store gave buyers free Airpods. And it worked.",
     dek:
@@ -100,6 +224,7 @@ export const articles = [
   }),
   makeArticle({
     slug: "macbook-neo-review",
+    template: "standard",
     category: "Laptops",
     title: "MacBook Neo review: Apple's cheaper laptop finally feels like a real Mac",
     dek:
@@ -153,6 +278,7 @@ export const articles = [
   }),
   makeArticle({
     slug: "iphone-17e-review",
+    template: "standard",
     category: "Phones",
     title: "iPhone 17e review: Apple's budget phone still knows exactly where to compromise",
     dek:
@@ -206,6 +332,7 @@ export const articles = [
   }),
   makeArticle({
     slug: "galaxy-s26-review",
+    template: "standard",
     category: "Phones",
     title: "Galaxy S26 review: Samsung polished the formula, but it did not really move it",
     dek:
@@ -259,6 +386,7 @@ export const articles = [
   }),
   makeArticle({
     slug: "xps-16-review",
+    template: "standard",
     category: "Laptops",
     title: "Dell XPS 16 review: The flagship is back, and the keyboard is still the question",
     dek:
@@ -312,6 +440,7 @@ export const articles = [
   }),
   makeArticle({
     slug: "budget-tablets-pen-support",
+    template: "standard",
     category: "Tablets",
     title: "Budget tablets are finally making room for good pen support",
     dek:
@@ -361,6 +490,7 @@ export const articles = [
   }),
   makeArticle({
     slug: "tiny-65w-chargers",
+    template: "standard",
     category: "Accessories",
     title: "Tiny 65W chargers are replacing the laptop brick, but the cable still matters",
     dek:
@@ -410,6 +540,7 @@ export const articles = [
   }),
   makeArticle({
     slug: "indoor-cameras-privacy-shutters",
+    template: "standard",
     category: "Smart Home",
     title: "Indoor cameras are finally treating privacy shutters like a basic feature",
     dek:
@@ -457,6 +588,7 @@ export const articles = [
   }),
   makeArticle({
     slug: "earbuds-battery-repair",
+    template: "standard",
     category: "Audio",
     title: "Wireless earbuds keep improving at noise canceling and failing at battery repair",
     dek:
@@ -506,6 +638,7 @@ export const articles = [
   }),
   makeArticle({
     slug: "smart-rings-chargers",
+    template: "standard",
     category: "Wearables",
     title: "Smart rings got lighter. Their chargers did not.",
     dek:
