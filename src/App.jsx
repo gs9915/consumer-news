@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useEffect } from "react";
 import {
   BrowserRouter,
   Link,
@@ -6,16 +6,13 @@ import {
   Route,
   Routes,
   useLocation,
+  useParams,
 } from "react-router-dom";
 import {
+  articles,
   author,
-  articleSections,
-  articleSidebarFacts,
-  articleSummary,
-  articleWatchlist,
   featuredStory,
-  homeCards,
-  homepageHighlights,
+  homepageStories,
   oyboCta,
 } from "./content";
 
@@ -43,13 +40,13 @@ function AppShell() {
   return (
     <div className="app-shell">
       <ScrollToTop />
-      <Topline />
       <Header />
       <Routes>
         <Route path="/oybo2" element={<ExternalRedirect to="https://consumer-news.com" />} />
         <Route path="/oybo3" element={<ExternalRedirect to="https://consumer-news.com" />} />
         <Route path="/" element={<HomePage />} />
-        <Route path="/story/oybo-airpods" element={<ArticlePage />} />
+        <Route path="/story/:slug" element={<ArticlePage />} />
+        <Route path="*" element={<NotFoundPage />} />
       </Routes>
       <Footer />
     </div>
@@ -64,108 +61,140 @@ function ExternalRedirect({ to }) {
   return null;
 }
 
-function Topline() {
+function StoryMeta({ story, compact = false }) {
   return (
-    <div className="topline">
-      <div className="container topline-inner">
-        <span>Shopping Analysis</span>
-        <span>Published March 16, 2026</span>
-      </div>
+    <div className={`story-meta${compact ? " compact" : ""}`}>
+      <span>By {story.author.name}</span>
+      {story.meta.map((item) => (
+        <span key={item}>{item}</span>
+      ))}
     </div>
   );
 }
 
 function Header() {
+  const firstPhoneStory = homepageStories.find((story) => story.category === "Phones");
+  const firstLaptopStory = homepageStories.find((story) => story.category === "Laptops");
+
   return (
     <header className="site-header">
       <div className="container header-inner">
-        <Link className="brand" to="/">
-          Consumer<span>News</span>
-        </Link>
+        <div className="header-top">
+          <Link className="brand" to="/">
+            ConsumerNews
+          </Link>
+          <p className="site-tagline">Technology reviews, product coverage, and buying advice.</p>
+        </div>
 
         <nav className="primary-nav" aria-label="Primary">
           <NavLink to="/">Home</NavLink>
+          <Link to="/#latest">Reviews</Link>
+          {firstPhoneStory ? <NavLink to={firstPhoneStory.path}>Phones</NavLink> : null}
+          {firstLaptopStory ? <NavLink to={firstLaptopStory.path}>Computing</NavLink> : null}
           <NavLink to={featuredStory.path}>Feature</NavLink>
-          <Link to="/#latest">Latest</Link>
         </nav>
-
-        <Link className="nav-cta" to={oyboCta.path}>
-          {oyboCta.label}
-        </Link>
       </div>
     </header>
   );
 }
 
 function HomePage() {
+  const topStories = homepageStories.slice(0, 4);
+  const moreStories = homepageStories.slice(4);
+
   return (
-    <main>
-      <section className="home-hero">
-        <div className="container home-hero-grid">
-          <article className="lead-story">
-            <p className="story-label">{featuredStory.category}</p>
-            <h1>{featuredStory.title}</h1>
-            <p className="story-dek">{featuredStory.dek}</p>
+    <main className="home-page">
+      <section className="home-top">
+        <div className="container home-top-grid">
+          <article className="feature-card">
+            {featuredStory.image ? (
+              <Link className="feature-media" to={featuredStory.path}>
+                <img src={featuredStory.image} alt={featuredStory.alt} />
+              </Link>
+            ) : null}
 
-            <div className="story-meta">
-              <span>By {author.name}</span>
-              {featuredStory.meta.map((item) => (
-                <span key={item}>{item}</span>
-              ))}
-            </div>
+            <div className="feature-body">
+              <p className="story-label">{featuredStory.category}</p>
+              <h1>
+                <Link className="headline-link" to={featuredStory.path}>
+                  {featuredStory.title}
+                </Link>
+              </h1>
+              <p className="story-dek">{featuredStory.dek}</p>
+              <StoryMeta story={featuredStory} />
 
-            <div className="story-actions">
-              <div className="cta-row">
+              <div className="story-actions">
                 <Link className="cta-button" to={oyboCta.path}>
                   {oyboCta.label}
                 </Link>
-                <Link className="cta-button cta-button-secondary" to={featuredStory.path}>
-                  Read why it worked
+                <Link className="story-link" to={featuredStory.path}>
+                  Read the feature
                 </Link>
               </div>
-              <p className="cta-note">{oyboCta.note}</p>
-              <ul className="lead-points" aria-label="Quick reasons to care">
-                {articleSummary.map((item) => (
-                  <li key={item}>{item}</li>
-                ))}
-              </ul>
             </div>
           </article>
 
-          <div className="lead-visual">
-            <img src={featuredStory.image} alt={featuredStory.alt} />
-          </div>
+          <aside className="home-rail">
+            <p className="panel-label">Latest reviews</p>
 
-          <aside className="lead-sidebar">
-            {homepageHighlights.map((item) => (
-              <article className="sidebar-panel" key={item.title}>
-                <p className="panel-label">{item.label}</p>
-                <h2>{item.title}</h2>
-                <p>{item.body}</p>
+            {topStories.map((story) => (
+              <article className="rail-story" key={story.slug}>
+                {story.image ? (
+                  <Link className="rail-story-media" to={story.path}>
+                    <img src={story.image} alt={story.alt} />
+                  </Link>
+                ) : null}
+
+                <div className="rail-story-body">
+                  <p className="story-label">{story.category}</p>
+                  <h2 className="rail-story-title">
+                    <Link className="headline-link" to={story.path}>
+                      {story.title}
+                    </Link>
+                  </h2>
+                  <StoryMeta compact story={story} />
+                </div>
               </article>
             ))}
           </aside>
         </div>
       </section>
 
-      <section className="section-block" id="latest">
+      <section className="home-feed" id="latest">
         <div className="container">
           <div className="section-heading">
-            <div>
-              <p className="panel-label">Latest</p>
-              <h2>Measured, editorial, and built to let the story breathe.</h2>
+            <div className="section-heading-copy">
+              <p className="panel-label">More coverage</p>
+              <h2>Buying advice across tablets, chargers, audio, smart home, and wearables.</h2>
+              <p>
+                A broader look at the products that quietly shape everyday tech
+                buying decisions.
+              </p>
             </div>
-            <Link className="story-link compact" to={featuredStory.path}>
-              Open the feature
-            </Link>
           </div>
 
-          <div className="cards-grid">
-            {homeCards.map((card) => (
-              <article className="news-card" key={card.title}>
-                <p className="panel-label">{card.label}</p>
-                <h3>{card.title}</h3>
-                <p>{card.body}</p>
+          <div className="feed-grid">
+            {moreStories.map((story) => (
+              <article className={`feed-story${story.image ? " has-image" : ""}`} key={story.slug}>
+                {story.image ? (
+                  <Link className="feed-story-media" to={story.path}>
+                    <img src={story.image} alt={story.alt} />
+                  </Link>
+                ) : null}
+
+                <div className="feed-story-body">
+                  <p className="story-label">{story.category}</p>
+                  <h3>
+                    <Link className="headline-link" to={story.path}>
+                      {story.title}
+                    </Link>
+                  </h3>
+                  <p className="story-card-dek">{story.dek}</p>
+                  <StoryMeta compact story={story} />
+                  <Link className="story-link compact" to={story.path}>
+                    Read article
+                  </Link>
+                </div>
               </article>
             ))}
           </div>
@@ -176,85 +205,69 @@ function HomePage() {
 }
 
 function ArticlePage() {
-  const [activeSection, setActiveSection] = useState(articleSections[0].id);
+  const { slug } = useParams();
+  const article = articles.find((item) => item.slug === slug);
 
-  useEffect(() => {
-    const elements = articleSections
-      .map((section) => document.getElementById(section.id))
-      .filter(Boolean);
+  if (!article) {
+    return <NotFoundPage />;
+  }
 
-    if (!elements.length) {
-      return undefined;
-    }
-
-    const observer = new IntersectionObserver(
-      (entries) => {
-        const visibleEntry = entries
-          .filter((entry) => entry.isIntersecting)
-          .sort((entryA, entryB) => entryB.intersectionRatio - entryA.intersectionRatio)[0];
-
-        if (visibleEntry) {
-          setActiveSection(visibleEntry.target.id);
-        }
-      },
-      {
-        rootMargin: "-28% 0px -48% 0px",
-        threshold: [0.2, 0.4, 0.6],
-      }
-    );
-
-    elements.forEach((element) => observer.observe(element));
-
-    return () => observer.disconnect();
-  }, []);
+  const relatedStories = articles.filter((item) => item.slug !== article.slug).slice(0, 3);
 
   return (
-    <main>
+    <main className="article-page">
       <section className="article-hero">
-        <div className="container article-hero-grid">
+        <div className={`container article-hero-shell${article.image ? "" : " is-text-only"}`}>
           <div className="article-copy">
-            <p className="story-label">{featuredStory.category}</p>
-            <h1>{featuredStory.title}</h1>
-            <p className="story-dek">{featuredStory.dek}</p>
+            <p className="story-label">{article.category}</p>
+            <h1>{article.title}</h1>
+            <p className="story-dek">{article.dek}</p>
 
             <div className="author-strip">
               <img className="author-headshot" src={author.image} alt={author.alt} />
               <div className="author-strip-copy">
-                <p className="author-kicker">By {author.name}</p>
-                <p className="author-role">{author.role}</p>
+                <p className="author-kicker">By {article.author.name}</p>
+                <p className="author-role">{article.author.role}</p>
               </div>
               <div className="author-publish">
                 <span>Published</span>
-                <strong>March 16, 2026, 9:00 AM EDT</strong>
+                <strong>{article.meta[1]}</strong>
+                <small>{article.meta[0]}</small>
               </div>
             </div>
 
-            <div className="article-cta-bar">
-              <Link className="cta-button" to={oyboCta.path}>
-                {oyboCta.label}
-              </Link>
-              <p className="cta-note">{oyboCta.note}</p>
-            </div>
+            {article.cta ? (
+              <div className="article-cta-bar">
+                <Link className="cta-button" to={article.cta.path}>
+                  {article.cta.label}
+                </Link>
+              </div>
+            ) : null}
           </div>
 
-          <figure className="article-media">
-            <img src={featuredStory.image} alt={featuredStory.alt} />
-            <figcaption>
-              AirPods remain one of the rare promotional products shoppers can value instantly.
-            </figcaption>
-          </figure>
+          {article.image ? (
+            <figure className="article-media">
+              <img src={article.image} alt={article.alt} />
+              <figcaption>{article.heroCaption}</figcaption>
+            </figure>
+          ) : null}
         </div>
       </section>
 
       <section className="article-main">
         <div className="container article-layout">
           <article className="article-column">
-            {articleSections.map((section) => (
-              <section
-                className={section.id === activeSection ? "article-section is-active" : "article-section"}
-                id={section.id}
-                key={section.id}
-              >
+            <section className="article-summary-block">
+              <p className="panel-label">Takeaways</p>
+              <ul className="summary-list">
+                {article.summary.map((item) => (
+                  <li key={item}>{item}</li>
+                ))}
+              </ul>
+            </section>
+
+            {article.sections.map((section) => (
+              <section className="article-section" id={section.id} key={section.id}>
                 <p className="section-label">{section.label}</p>
                 <h2>{section.title}</h2>
 
@@ -263,32 +276,22 @@ function ArticlePage() {
                 ))}
 
                 {section.note ? <aside className="inline-note">{section.note}</aside> : null}
-                {section.quote ? <blockquote className="pull-quote">{section.quote}</blockquote> : null}
-
-                {section.image ? (
-                  <figure className="inline-photo">
-                    <img src={section.image.src} alt={section.image.alt} />
-                    <figcaption>{section.image.caption}</figcaption>
-                  </figure>
-                ) : null}
               </section>
             ))}
+
+            {article.cta ? (
+              <section className="article-bottom-cta">
+                <p className="panel-label">Store visit</p>
+                <h2>See the latest offer details at Oybo.</h2>
+                <Link className="cta-button" to={article.cta.path}>
+                  {article.cta.label}
+                </Link>
+              </section>
+            ) : null}
           </article>
 
           <aside className="article-sidebar">
-            <div className="sidebar-card cta-panel">
-              <p className="panel-label">Primary action</p>
-              <h3>Send readers straight to Oybo.</h3>
-              <p>
-                The page is now optimized around one main exit instead of a
-                stack of competing editorial prompts.
-              </p>
-              <Link className="cta-button" to={oyboCta.path}>
-                {oyboCta.label}
-              </Link>
-            </div>
-
-            <div className="sidebar-card">
+            <section className="article-rail-section">
               <p className="panel-label">About the author</p>
               <div className="author-card">
                 <img className="author-headshot" src={author.image} alt={author.alt} />
@@ -298,60 +301,58 @@ function ArticlePage() {
                 </div>
               </div>
               <p className="author-bio">{author.bio}</p>
-            </div>
+            </section>
 
-            <div className="sidebar-card">
-              <p className="panel-label">What to know</p>
-              <ul className="summary-list">
-                {articleSummary.map((item) => (
-                  <li key={item}>{item}</li>
-                ))}
-              </ul>
-            </div>
-
-            <div className="sidebar-card">
-              <p className="panel-label">At a glance</p>
+            <section className="article-rail-section">
+              <p className="panel-label">Key facts</p>
               <dl className="facts-list">
-                {articleSidebarFacts.map((fact) => (
+                {article.facts.map((fact) => (
                   <div key={fact.label}>
                     <dt>{fact.label}</dt>
                     <dd>{fact.value}</dd>
                   </div>
                 ))}
               </dl>
-            </div>
+            </section>
 
-            <div className="sidebar-card">
-              <p className="panel-label">Watch next</p>
-              <ul className="summary-list">
-                {articleWatchlist.map((item) => (
-                  <li key={item}>{item}</li>
+            <section className="article-rail-section">
+              <p className="panel-label">Related coverage</p>
+              <div className="related-stories">
+                {relatedStories.map((story) => (
+                  <article className="related-story" key={story.slug}>
+                    <p className="story-label">{story.category}</p>
+                    <h3>
+                      <Link className="headline-link" to={story.path}>
+                        {story.title}
+                      </Link>
+                    </h3>
+                    <Link className="story-link compact" to={story.path}>
+                      Read article
+                    </Link>
+                  </article>
                 ))}
-              </ul>
-            </div>
-
-            <figure className="sidebar-card sidebar-photo">
-              <img
-                src="https://images.pexels.com/photos/3921848/pexels-photo-3921848.jpeg?cs=srgb&dl=pexels-readymade-3921848.jpg&fm=jpg"
-                alt="AirPods arranged beside an open charging case."
-              />
-              <figcaption>
-                The product does a lot of the communication before the brand
-                ever gets a sentence in.
-              </figcaption>
-            </figure>
+              </div>
+            </section>
           </aside>
         </div>
       </section>
+    </main>
+  );
+}
 
-      <section className="article-bottom-cta">
-        <div className="container article-bottom-cta-inner">
-          <div>
-            <p className="panel-label">Ready to click through?</p>
-            <h2>Keep the article flat. Let the CTA do the work.</h2>
-          </div>
-          <Link className="cta-button" to={oyboCta.path}>
-            {oyboCta.label}
+function NotFoundPage() {
+  return (
+    <main className="not-found-page">
+      <section className="container not-found-inner">
+        <p className="panel-label">Not found</p>
+        <h1>That article is not available.</h1>
+        <p>Browse the latest coverage or return to the Oybo feature.</p>
+        <div className="story-actions">
+          <Link className="story-link" to="/">
+            Go to homepage
+          </Link>
+          <Link className="story-link" to={featuredStory.path}>
+            Read the feature
           </Link>
         </div>
       </section>
@@ -365,13 +366,14 @@ function Footer() {
       <div className="container footer-inner">
         <div>
           <strong>ConsumerNews</strong>
-          <p>
-            Independent coverage of shopping, products, and retail behavior.
-          </p>
+          <p>Coverage of phones, laptops, audio gear, accessories, and the stores that sell them.</p>
         </div>
-        <Link className="cta-button cta-button-secondary" to={oyboCta.path}>
-          {oyboCta.label}
-        </Link>
+
+        <nav className="footer-nav" aria-label="Footer">
+          <Link to="/">Home</Link>
+          <Link to="/#latest">Reviews</Link>
+          <Link to={featuredStory.path}>Feature</Link>
+        </nav>
       </div>
     </footer>
   );
