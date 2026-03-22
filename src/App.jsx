@@ -12,11 +12,11 @@ import {
   articleSections,
   articleSidebarFacts,
   articleSummary,
-  articleTokens,
   articleWatchlist,
   featuredStory,
   homeCards,
   homepageHighlights,
+  oyboCta,
 } from "./content";
 
 function ScrollToTop() {
@@ -88,6 +88,10 @@ function Header() {
           <NavLink to={featuredStory.path}>Feature</NavLink>
           <Link to="/#latest">Latest</Link>
         </nav>
+
+        <Link className="nav-cta" to={oyboCta.path}>
+          {oyboCta.label}
+        </Link>
       </div>
     </header>
   );
@@ -111,16 +115,20 @@ function HomePage() {
             </div>
 
             <div className="story-actions">
-              <Link className="story-link" to={featuredStory.path}>
-                Read the full article
-              </Link>
-              <div className="token-chip-row" aria-label="Story tokens preview">
-                {articleTokens.map((token) => (
-                  <span className="token-chip" key={token}>
-                    {token}
-                  </span>
-                ))}
+              <div className="cta-row">
+                <Link className="cta-button" to={oyboCta.path}>
+                  {oyboCta.label}
+                </Link>
+                <Link className="cta-button cta-button-secondary" to={featuredStory.path}>
+                  Read why it worked
+                </Link>
               </div>
+              <p className="cta-note">{oyboCta.note}</p>
+              <ul className="lead-points" aria-label="Quick reasons to care">
+                {articleSummary.map((item) => (
+                  <li key={item}>{item}</li>
+                ))}
+              </ul>
             </div>
           </article>
 
@@ -220,6 +228,13 @@ function ArticlePage() {
                 <strong>March 16, 2026, 9:00 AM EDT</strong>
               </div>
             </div>
+
+            <div className="article-cta-bar">
+              <Link className="cta-button" to={oyboCta.path}>
+                {oyboCta.label}
+              </Link>
+              <p className="cta-note">{oyboCta.note}</p>
+            </div>
           </div>
 
           <figure className="article-media">
@@ -261,6 +276,18 @@ function ArticlePage() {
           </article>
 
           <aside className="article-sidebar">
+            <div className="sidebar-card cta-panel">
+              <p className="panel-label">Primary action</p>
+              <h3>Send readers straight to Oybo.</h3>
+              <p>
+                The page is now optimized around one main exit instead of a
+                stack of competing editorial prompts.
+              </p>
+              <Link className="cta-button" to={oyboCta.path}>
+                {oyboCta.label}
+              </Link>
+            </div>
+
             <div className="sidebar-card">
               <p className="panel-label">About the author</p>
               <div className="author-card">
@@ -316,6 +343,18 @@ function ArticlePage() {
           </aside>
         </div>
       </section>
+
+      <section className="article-bottom-cta">
+        <div className="container article-bottom-cta-inner">
+          <div>
+            <p className="panel-label">Ready to click through?</p>
+            <h2>Keep the article flat. Let the CTA do the work.</h2>
+          </div>
+          <Link className="cta-button" to={oyboCta.path}>
+            {oyboCta.label}
+          </Link>
+        </div>
+      </section>
     </main>
   );
 }
@@ -330,8 +369,8 @@ function Footer() {
             Independent coverage of shopping, products, and retail behavior.
           </p>
         </div>
-        <Link className="story-link compact" to={featuredStory.path}>
-          Jump back to the Oybo feature
+        <Link className="cta-button cta-button-secondary" to={oyboCta.path}>
+          {oyboCta.label}
         </Link>
       </div>
     </footer>

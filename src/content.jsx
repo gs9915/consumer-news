@@ -9,6 +9,12 @@ export const author = {
   alt: "Samantha Gordon smiling with curly hair and a black top.",
 };
 
+export const oyboCta = {
+  path: "/oybo2",
+  label: "Go to Oybo",
+  note: "Uses the existing Oybo redirect path so your added URL stays intact.",
+};
+
 export const featuredStory = {
   path: "/story/oybo-airpods",
   category: "Analysis",
@@ -24,21 +30,21 @@ export const featuredStory = {
 export const homepageHighlights = [
   {
     label: "Why it matters",
-    title: "Premium freebies still beat vague discounts when a retailer needs attention quickly.",
+    title: "A recognizable reward gives readers a simple reason to click.",
     body:
-      "Recognizable hardware tells shoppers exactly what the upside is, so the promotion feels tangible before they know much about the retailer behind it.",
+      "The giveaway works as a headline because the upside is instantly obvious. That makes the CTA easier to understand too.",
   },
   {
-    label: "Audience signal",
-    title: "Queue-worthy retail has become social content again.",
+    label: "Conversion angle",
+    title: "The page should lead with one path out: go to Oybo.",
     body:
-      "The modern version of a line is still a line, but now it also serves as proof for anyone seeing it later in a short video or a group-chat screenshot.",
+      "Instead of stacking multiple competing actions, the layout now points readers toward a single primary next step.",
   },
   {
     label: "What to watch",
-    title: "The first visit is easy to buy. The second one is where the strategy gets tested.",
+    title: "The story still matters, but now it supports the CTA instead of competing with it.",
     body:
-      "The giveaway may have done its job if it got shoppers through the door. Whether Oybo can turn that moment into habit is the more durable measure.",
+      "The article keeps the context and analysis, while the overall page structure does less to distract from the action.",
   },
 ];
 
